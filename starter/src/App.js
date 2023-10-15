@@ -14,7 +14,6 @@ function App() {
   const [bookCurrentRead, setBookCurrentRead] = useState([]);
   const [bookRead, setBookRead] = useState([]);
   const [bookWantToRead, setBookWantToRead] = useState([]);
-  const [cookie, setCookie] = useState([])
   const bookStatus = new BookStatus(
     bookShelf, setBooks, bookCurrentRead, setBookCurrentRead,
     bookRead, setBookRead, bookWantToRead, setBookWantToRead
@@ -34,35 +33,28 @@ function App() {
       for (const r of res){
         for (const obj of CookieObj){
           if (obj.book_id === r.id){
-            r.selection = obj.book_selection
+            r.selection = obj.selection
             r.cookie = true
           }
         }
       }
 
-      const curReadList = res.filter(r => r.selection==='currentlyReading')
-                             .map(r => {
-                              return {...r, blongingList:"currentlyReading"}
+  
+      const curReadList = CookieObj.filter(c => c.selection==='currentlyReading')
+                             .map(c => {
+                              return {...c, blongingList:"currentlyReading"}
                              }) 
 
-      const bookReadList = res.filter(r => r.selection==='read')
-                              .map(r => {
-                              return {...r, blongingList:"read"}
+      const bookReadList = CookieObj.filter(c => c.selection==='read')
+                              .map(c => {
+                              return {...c, blongingList:"read"}
                               })
-      const bookWantToReadList = res.filter(r => r.selection==='wantToRead')
-                                    .map(r => {
-                                    return {...r, blongingList:"wantToRead"}
+      const bookWantToReadList = CookieObj.filter(c => c.selection==='wantToRead')
+                                    .map(c => {
+                                    return {...c, blongingList:"wantToRead"}
                                     })
           
-      console.log(res)
-      console.log("current readlist")
-      console.log(curReadList)
-      console.log("readlist")
-      console.log(bookReadList)
-      console.log("WantToReadList")
-      console.log(bookWantToReadList)
       setBooks(res)
-      //console.log(res.filter(r => r.selection==='currentlyReading'))
       setBookCurrentRead(curReadList)
       setBookRead(bookReadList)
       setBookWantToRead(bookWantToReadList)

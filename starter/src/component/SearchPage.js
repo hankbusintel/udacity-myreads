@@ -1,20 +1,29 @@
 import DisplayBooks from './BookLists'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import * as BooksAPI from '../api/BooksAPI'
 
 
 const SearchPage = ({navigate, bookStatus}) => {
   const [query, setQuery] = useState("");
 
   const updateQuery = (query) => {
-    console.log(query)
+    //console.log(query)
     setQuery(query.toLowerCase());
+    BooksAPI.search(query, 20)
+    .then(result => 
+      {
+        if (result) {
+          
+          bookStatus.setBooks(result)
+        } 
+      }
+    )
+      
   };
 
-  const bookShelf = query ==="" ? bookStatus.bookShelf: bookStatus.bookShelf.filter(book => 
-    book.title.toLowerCase().includes(query) ||
-    book.authors.join(",").toLowerCase().includes(query) ||
-    book.industryIdentifiers.map(i => i.identifier).join(",").toLowerCase().includes(query)
-    )
+
+  
+
   return (
       <div className="search-books">
         <div className="search-books-bar">
@@ -36,7 +45,7 @@ const SearchPage = ({navigate, bookStatus}) => {
         <div className="search-books-results">
           <ol className="books-grid">
             
-          <DisplayBooks books={bookShelf} bookStatus={bookStatus} />
+          <DisplayBooks books={bookStatus.bookShelf} bookStatus={bookStatus} />
               
           </ol>
         </div>

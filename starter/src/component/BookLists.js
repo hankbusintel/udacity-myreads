@@ -82,7 +82,9 @@ const DisplayBooks = ({books, bookStatus}) => {
                             width: 128,
                             height: 188,
                             backgroundImage:
-                            `url("${book.imageLinks.thumbnail}")`,
+                            `url("${
+                                typeof book.imageLinks === 'object'? book.imageLinks.thumbnail:book.imageLinks
+                            }")`,
                         }}
                         ></div>
                         <div className="book-shelf-changer">
@@ -90,7 +92,7 @@ const DisplayBooks = ({books, bookStatus}) => {
                         </div>
                     </div>
                     <div className="book-title">{book.title}</div>
-                    <div className="book-authors">{book.authors.join(",")}</div>
+                    <div className="book-authors">{book.authors instanceof Array? book.authors.join(","): book.authors}</div>
                     </div>
                 </li>
                 )

@@ -12,7 +12,7 @@ const BookDropDown = ({handleChange, book}) => {
         const newCookie = cookieObj.map(
             obj => {
                 //console.log(obj.book_id, newItem.book_id)
-                if (obj.book_id === newItem.book_id) {
+                if (obj.id === newItem.id) {
                     isUpdate = true;
                     return newItem
                 }
@@ -36,7 +36,8 @@ const BookDropDown = ({handleChange, book}) => {
         const CookieObj = JSON.parse("["+cookie.trim()+"]")
         //console.log(CookieObj)
         
-        const newItem = {book_id: book.id, book_selection: book.selection}
+        const newItem = {id: book.id, selection: book.selection,
+        title: book.title, authors: book.authors.join(','), imageLinks: book.imageLinks.thumbnail}
         const newCookieString = convertUpdateJson(CookieObj, newItem)
         //const newCookieString = cookie.length === 0 ? JSON.stringify(newItem): cookie+","+JSON.stringify(newItem)
         Cookies.set('book-arrangement-react', newCookieString)
