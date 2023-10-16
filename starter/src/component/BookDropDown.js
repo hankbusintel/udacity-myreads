@@ -50,7 +50,7 @@ const BookDropDown = ({handleChange, book}) => {
                     updateCookie(event)
                 }
             }>
-                <option value="none" disabled>Move to...</option>
+                <option value="none-v2" disabled>Move to...</option>
                 <option value="currentlyReading">Currently Reading</option>
                 <option value="wantToRead">Want to Read</option>
                 <option value="read">Read</option>
