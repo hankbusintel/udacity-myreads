@@ -3,26 +3,43 @@ import { useEffect, useState } from 'react';
 import * as BooksAPI from '../api/BooksAPI'
 
 
-const SearchPage = ({navigate, bookStatus}) => {
+const SearchPage = ({navigate, bookStatus, selectionUpdateFunc}) => {
   const [query, setQuery] = useState("");
 
+  const updateSelectionState = (result) => {
+    const bookLists = [bookStatus.bookRead, bookStatus.bookCurrentRead, bookStatus.bookWantToRead]
+    let bookSelectResult;
+    bookLists.forEach( item => {
+      bookSelectResult= selectionUpdateFunc(result, item)
+    })
+    
+    return bookSelectResult;
+  }
+
   const updateQuery = (query) => {
-    //console.log(query)
     setQuery(query.toLowerCase());
-    BooksAPI.search(query, 20)
+    if (query.length > 0) {
+      BooksAPI.search(query, 20)
     .then(result => 
       {
-        if (result) {
-          
+        if (!result.error) {
+          //console.log(result)
+          const booksInShelf = updateSelectionState(result)
           bookStatus.setBooks(result)
-        } 
+        } else {
+          bookStatus.setBooks([])
+        }
       }
-    )
-      
+    ).catch((err) =>
+      {//console.log(err)
+        bookStatus.setBooks(bookStatus.bookShelf)
+      }
+    )} else {
+      bookStatus.setBooks([])
+    }
+  
   };
 
-
-  
 
   return (
       <div className="search-books">

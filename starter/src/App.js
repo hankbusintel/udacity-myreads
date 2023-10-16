@@ -21,6 +21,18 @@ function App() {
 
   let navigate = useNavigate();
 
+  const updateSelectionStates = (booklist, ref) => {
+    for (const b of booklist){
+      for (const r of ref){
+        if (b.id === r.id){
+          b.selection = r.selection
+          b.cookie = true
+        }
+      }
+    }
+    return booklist
+  }
+
   useEffect(() => {
     const getBooks = async () => {
       let res = await BooksAPI.getAll()
@@ -28,17 +40,8 @@ function App() {
       
       let cookie = Cookies.get('book-arrangement-react') ? Cookies.get('book-arrangement-react'): ''
       const CookieObj = JSON.parse("["+cookie.trim()+"]")
-      console.log(CookieObj)
-
-      for (const r of res){
-        for (const obj of CookieObj){
-          if (obj.book_id === r.id){
-            r.selection = obj.selection
-            r.cookie = true
-          }
-        }
-      }
-
+      //console.log(CookieObj)
+      res = updateSelectionStates(res, CookieObj)
   
       const curReadList = CookieObj.filter(c => c.selection==='currentlyReading')
                              .map(c => {
@@ -53,7 +56,7 @@ function App() {
                                     .map(c => {
                                     return {...c, blongingList:"wantToRead"}
                                     })
-          
+      //console.log(res)
       setBooks(res)
       setBookCurrentRead(curReadList)
       setBookRead(bookReadList)
@@ -73,7 +76,7 @@ function App() {
       }/>
 
       <Route exact path="/search" element={
-        <SearchPage navigate={navigate} bookStatus={bookStatus} 
+        <SearchPage navigate={navigate} bookStatus={bookStatus} selectionUpdateFunc={updateSelectionStates}
         />
       }/>
     </Routes>
