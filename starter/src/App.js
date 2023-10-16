@@ -44,7 +44,7 @@ function App() {
 
   const populateDefault = (cookie, books) => {
     const uniqueCookieId = cookie.map(r => r.id)
-    console.log(cookie)
+    //console.log(cookie)
     books.forEach(b => {
       if (b.shelf && !uniqueCookieId.includes(b.id)) {
         b.selection = b.shelf
@@ -73,11 +73,11 @@ function App() {
   useEffect(() => {
     const getBooks = async () => {
       let res = await BooksAPI.getAll()
-      //console.log(res)
+      console.log(res)
       
       let cookie = Cookies.get('book-arrangement-react') ? Cookies.get('book-arrangement-react'): ''
       let CookieObj = JSON.parse("["+cookie.trim()+"]")
-      console.log(CookieObj)
+      //console.log(CookieObj)
       
       res = updateSelectionStates(res, CookieObj)
       CookieObj = populateDefault(CookieObj, res)
@@ -85,7 +85,7 @@ function App() {
       const curReadList = filterCookie(CookieObj, 'currentlyReading')
       const bookReadList = filterCookie(CookieObj, 'read')
       const bookWantToReadList = filterCookie(CookieObj, 'wantToRead')
-      console.log(bookWantToReadList)
+      //console.log(bookWantToReadList)
       //setBooks(res)
       setBookCurrentRead(curReadList)
       setBookRead(bookReadList)

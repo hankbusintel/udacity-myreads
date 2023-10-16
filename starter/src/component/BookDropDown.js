@@ -1,5 +1,6 @@
 import { useState } from "react"
 import Cookies from 'js-cookie'
+import * as BookAPI from '../api/BooksAPI'
 
 
 const BookDropDown = ({handleChange, book}) => {
@@ -44,11 +45,16 @@ const BookDropDown = ({handleChange, book}) => {
         Cookies.set('book-arrangement-react', newCookieString)
     }
 
+    const updateBookAPI = (shelf) => {
+        BookAPI.update(book,shelf)
+    }
+
     return (
         
             <select defaultValue={bookSelect} onChange={(event) => {
                     handleChange(book, event.target.value)
                     updateCookie(event)
+                    updateBookAPI(book, event.target.value)
                 }
             }>
                 <option value="none-v2" disabled>Move to...</option>
