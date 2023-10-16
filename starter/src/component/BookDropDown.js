@@ -35,9 +35,10 @@ const BookDropDown = ({handleChange, book}) => {
         let cookie = Cookies.get('book-arrangement-react') ? Cookies.get('book-arrangement-react'): ''
         const CookieObj = JSON.parse("["+cookie.trim()+"]")
         //console.log(CookieObj)
-        
+        const bookAuthors = book.authors instanceof Array? book.authors.join(","): book.authors
+        const bookImage = typeof book.imageLinks === 'object'? book.imageLinks.thumbnail:book.imageLinks
         const newItem = {id: book.id, selection: book.selection,
-        title: book.title, authors: book.authors.join(','), imageLinks: book.imageLinks.thumbnail}
+        title: book.title, authors: bookAuthors, imageLinks: bookImage}
         const newCookieString = convertUpdateJson(CookieObj, newItem)
         //const newCookieString = cookie.length === 0 ? JSON.stringify(newItem): cookie+","+JSON.stringify(newItem)
         Cookies.set('book-arrangement-react', newCookieString)

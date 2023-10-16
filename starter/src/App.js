@@ -23,14 +23,51 @@ function App() {
 
   const updateSelectionStates = (booklist, ref) => {
     for (const b of booklist){
+      if (!b.blongingList) {
+        b.blongingList = b.shelf
+        b.selection = b.shelf
+      }
+      
       for (const r of ref){
         if (b.id === r.id){
           b.selection = r.selection
+          b.blongingList = r.selection
           b.cookie = true
+          
         }
       }
+
     }
     return booklist
+  }
+
+
+  const populateDefault = (cookie, books) => {
+    const uniqueCookieId = cookie.map(r => r.id)
+    console.log(cookie)
+    books.forEach(b => {
+      if (b.shelf && !uniqueCookieId.includes(b.id)) {
+        b.selection = b.shelf
+        let newItem = {id: b.id, selection: b.shelf,
+          title: b.title, authors: b.authors.join(','), imageLinks: b.imageLinks.thumbnail,
+        cookie: true}
+        //const newCookieString = convertUpdateJson(cookie, newItem)
+        //console.log(newCookieString)
+        cookie.push(newItem)
+        //Cookies.set('book-arrangement-react', newCookieString)
+        
+      }
+    });
+    return cookie;
+  }
+
+  const filterCookie = (cookie, selection) => {
+    
+    const newList = cookie.filter(c => c.selection===selection)
+                    .map(c => {
+                    return {...c, blongingList:selection}
+                    }) 
+    return newList
   }
 
   useEffect(() => {
@@ -39,25 +76,17 @@ function App() {
       //console.log(res)
       
       let cookie = Cookies.get('book-arrangement-react') ? Cookies.get('book-arrangement-react'): ''
-      const CookieObj = JSON.parse("["+cookie.trim()+"]")
-      //console.log(CookieObj)
+      let CookieObj = JSON.parse("["+cookie.trim()+"]")
+      console.log(CookieObj)
+      
       res = updateSelectionStates(res, CookieObj)
-  
-      const curReadList = CookieObj.filter(c => c.selection==='currentlyReading')
-                             .map(c => {
-                              return {...c, blongingList:"currentlyReading"}
-                             }) 
-
-      const bookReadList = CookieObj.filter(c => c.selection==='read')
-                              .map(c => {
-                              return {...c, blongingList:"read"}
-                              })
-      const bookWantToReadList = CookieObj.filter(c => c.selection==='wantToRead')
-                                    .map(c => {
-                                    return {...c, blongingList:"wantToRead"}
-                                    })
-      //console.log(res)
-      setBooks(res)
+      CookieObj = populateDefault(CookieObj, res)
+      
+      const curReadList = filterCookie(CookieObj, 'currentlyReading')
+      const bookReadList = filterCookie(CookieObj, 'read')
+      const bookWantToReadList = filterCookie(CookieObj, 'wantToRead')
+      console.log(bookWantToReadList)
+      //setBooks(res)
       setBookCurrentRead(curReadList)
       setBookRead(bookReadList)
       setBookWantToRead(bookWantToReadList)
